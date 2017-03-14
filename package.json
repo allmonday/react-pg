@@ -13,14 +13,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/angular": "^1.6.3",
     "@types/react": "^15.0.14",
     "@types/react-dom": "^0.14.23",
+    "angular": "^1.6.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.1.2",
     "glob": "^7.1.1",
+    "source-map-loader": "^0.1.6",
+    "ts-loader": "^2.0.1",
     "typescript": "^2.2.1"
   }
 }

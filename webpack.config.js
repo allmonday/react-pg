@@ -1,8 +1,8 @@
 var path = require("path");
 var glob = require("glob");
 
-var entries = glob.sync("./src/page/*/index.ts").reduce(function (prev, item) {
-    key = item.replace(/\//g, '_').replace(/^\./, '').replace(/^\_/, '').replace(/\.ts$/, '');
+var entries = glob.sync("./src/page/*/index.ts*").reduce(function (prev, item) {
+    key = item.replace(/\//g, '_').replace(/^\./, '').replace(/^\_/, '').replace(/\.tsx?$/, '');
     prev[key] = item;
     return prev;
 }, {});
@@ -16,7 +16,8 @@ module.exports = {
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+
     },
     module: {
         loaders: [
@@ -24,8 +25,9 @@ module.exports = {
             { 
                 test: /\.tsx?$/, 
                 loader: "awesome-typescript-loader",
-                exclude: /(node_modules|bower_components)/,
-             }
+                // loader: "ts-loader",
+                include: path.join(__dirname, 'src')
+            },
         ]
     }
 }
