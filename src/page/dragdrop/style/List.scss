@@ -8,15 +8,16 @@
     height: 3em;
     line-height: 3em;
     border: 1px solid #ccc;
+    margin-bottom: 1px;
+
     &.hover {
-        border: 1px solid red;
+        // border: 2px solid #ccc;
     }
     &.empty {
-        background: #ccc;
+        box-shadow: inset 1px 1px 13px 1px #ccc;
     }
     &.hide {
-        // display: none;
-        background: #eee;
-        color: #eee;
+        transform: scale(0.8, 0.8);
     }
 }
+

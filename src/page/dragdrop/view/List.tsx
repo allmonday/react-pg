@@ -22,6 +22,7 @@ interface ListStates {
     above: boolean
     list: ListItem[]
     start: number
+    extraKey: number
 }
 
 export class DndList extends React.Component<ListProps, ListStates> {
@@ -34,9 +35,14 @@ export class DndList extends React.Component<ListProps, ListStates> {
             list: this.props.list.map((item, idx) => {
                 return { item };
             }),
+            extraKey: this.props.list.length
         }
     }
-    dragStart(idx: number, e: DragEvent) {
+    dragStart(idx: number, e: React.DragEvent<HTMLElement>) {
+        // e.dataTransfer.effectAllowed = 'move';
+        // e.dataTransfer.setData("text/html", e.currentTarget.toString());
+        let div = document.createElement("div")
+        div.classList.add("dnd-list-item");
         this.setState({
             start: idx
         })
@@ -102,7 +108,7 @@ export class DndList extends React.Component<ListProps, ListStates> {
                         >{li.item }</li>
 
                     let placeholder = <li 
-                        key={'z'} 
+                        key={this.state.extraKey} 
                         onDragEnter={this._dragKeep}
                         onDragOver={this._dragKeep}
                         onDrop={this.dragDrop.bind(this)}
@@ -111,12 +117,12 @@ export class DndList extends React.Component<ListProps, ListStates> {
 
                     if (hovered) {
                         if (this.state.above) {
-                            return ( <div>
+                            return ( <div key={'z'}>
                                     { placeholder }
                                     { content }
                                 </div>)
                         } else {
-                            return ( <div>
+                            return ( <div key={'z'}>
                                     { content }
                                     { placeholder }
                                 </div>)
