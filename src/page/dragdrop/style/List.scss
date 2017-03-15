@@ -1,0 +1,22 @@
+.dnd-list {
+    list-style: none;
+    margin-left: 0;
+}
+.dnd-list-item {
+    text-align: center;
+    width: 200px;
+    height: 3em;
+    line-height: 3em;
+    border: 1px solid #ccc;
+    &.hover {
+        border: 1px solid red;
+    }
+    &.empty {
+        background: #ccc;
+    }
+    &.hide {
+        // display: none;
+        background: #eee;
+        color: #eee;
+    }
+}
