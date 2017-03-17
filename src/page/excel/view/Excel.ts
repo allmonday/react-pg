@@ -78,12 +78,22 @@ let Excel = React.createClass({
         })
     },
     _renderToolbar: function () {
-        return React.DOM.button(
-            {
-                onClick: this._toggleSearch,
-                className: 'toolbar',
-            }, 
-            "search"
+        return React.DOM.div({className: 'toolbar'}, 
+            React.DOM.button(
+                {
+                    onClick: this._toggleSearch,
+                    className: 'toolbar',
+                }, 
+                "search"
+            ),
+            React.DOM.a({
+                onClick: this._download.bind(this, 'json'),
+                href: 'data.json'
+            }, "expot json "),
+            React.DOM.a({
+                onClick: this._download.bind(this, 'csv'),
+                href: 'data.csv'
+            }, "expot csv ")
         )
     },
     _renderSearch: function () {
@@ -102,6 +112,26 @@ let Excel = React.createClass({
                 })
             )
         )
+    },
+    _download: function(format: string, ev: Event) {
+          var contents = format === 'json'
+            ? JSON.stringify(this.state.data)
+            : this.state.data.reduce(function(result: string, row: string[]) {
+                return result
+                + row.reduce(function(rowresult, cell, idx) {
+                    return rowresult
+                        + '"'
+                        + cell.replace(/"/g, '""')
+                        + '"'
+                        + (idx < row.length - 1 ? ',' : '');
+                    }, '')
+                + "\n";
+            }, '');
+
+        var URL = window.URL; //|| window.webkitURL;
+        var blob = new Blob([contents], {type: 'text/' + format});
+        (<HTMLAnchorElement>ev.target).href = URL.createObjectURL(blob);
+        (<HTMLAnchorElement>ev.target).download = 'data.' + format;
     },
     _renderTable: function () {
         return (
