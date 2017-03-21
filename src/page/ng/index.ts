@@ -112,6 +112,50 @@ angular.module("app", [])
         return config;
     })
 
+
+    .directive("myNgBind", function($compile: angular.ICompileService) {
+        return {
+            restrict: 'AC',
+            compile: function (template) {
+                console.log(template);  
+                return function (scope, element, attr) {
+                    let domElement = element[0];
+                    scope.$watch(attr.myNgBind, function (value) {
+                        domElement.textContent = JSON.stringify(value);
+                    })
+                }
+            }
+        }
+    })
+
+    .directive("myTemplate", function ($compile: angular.ICompileService) {
+        return {
+            restrict: 'E',
+            scope: {
+                content: "@"
+            },
+            template: `<div>hello {{ content }} </div>`,
+            compile: function (template) {
+                // console.log(template[0]);
+                let dom = template[0];
+                console.log(dom.innerHTML);
+                
+                return {
+                    pre: function preLink(scope, element, attrs) {
+                        console.log('prelink');
+                        element.append("<p>hel</p>");
+                        console.log(element[0].innerHTML);
+                    },
+                    post: function postLink(scope, element, attrs) {
+                        console.log('postlink');
+                        console.log(element[0].innerHTML);
+                    }
+                }
+            }
+        }
+    })
+
+
     .factory("blurbService", function () {
         let cache: {[key: string]: string} = {}; 
         return function(blurb: string) {
@@ -129,4 +173,3 @@ angular.module("app", [])
             return blurbService(input);
         }
     })
-
