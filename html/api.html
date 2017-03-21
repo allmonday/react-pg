@@ -4,10 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
     <title>Document</title>
 </head>
-<body ng-app="app">
+<body class="container" ng-app="app">
     <div id="app" ng-controller="appController as vm">
+        <md-content flex layout-padding>
+            <form novalidate>
+                <md-input-container>
+                    <label for="">name</label>
+                    <input type="text" ng-model="vm.model.name">
+                </md-input-container>
+                <md-input-container>
+                    <label for="">email</label>
+                    <input type="text" ng-model="vm.model.email">
+                </md-input-container>
+                <md-input-container>
+                    <label for="">password</label>
+                    <input type="password" ng-model="vm.model.password">
+                </md-input-container>
+                
+                <md-divider></md-divider>
+                <md-button class="md-raised" ng-click="vm.model.login()">login</md-button>
+                <md-button class="md-raised" ng-click="vm.model.register()">register</md-button>
+                <pre>{{ vm.model.payload | json }}</pre>
+            </form>
+
+            <hr>
+
+            <form>
+                <div class="form-group">
+                    <label for="">title</label>
+                    <input type="text" ng-model="vm.model.title">
+                </div>
+                <div class="form-group">
+                    <label for="">body</label>
+                    <input type="text" ng-model="vm.model.body">
+                </div>
+                <button class="btn btn-default" ng-click="vm.model.addPost()">create post</button>
+            </form>
+            
+            <hr>
+
+            <button class="btn btn-default" ng-click="vm.model.refresh()">refresh</button>
+            <div ng-repeat="post in vm.model.posts">
+                <p>{{ post.title }} : {{ post.body }} </p>
+            </div>
+
+        </md-content>
     </div>
     <script src="/bin/src_page_api_index.js"></script>
 </body>
