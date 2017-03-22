@@ -2,14 +2,33 @@ import * as angular from "angular";
 
 
 angular.module("app", [])
+    .provider("taskRunner", function() {
+        let name = "default";
+        this.setName = function (value: string) {
+            name = value;
+        }
+        this.$get = function() {
+            return new TaskRunner(name);
+        }
+        return this;
+    })
+
+    .config(function (taskRunnerProvider: any) {
+        taskRunnerProvider.setName("hello");
+    })
     .controller("testController", function($scope: angular.IScope) {
         let ctrl = this;
         ctrl.model = {
             name: "tangkikodo"
         }
     })
-    .controller("appController", function ($scope: angular.IScope) {
+    .controller("appController", function ($scope: angular.IScope, unicornLauncher, taskRunner) {
         $scope.name = "tangkikodo";
+        $scope.launch = () => {
+            taskRunner.run();
+            unicornLauncher.launch();
+            console.log(unicornLauncher.count);
+        }
         let ctrl = this;
     })
     .service("appService", function ($http:angular.IHttpService) {
@@ -134,7 +153,7 @@ angular.module("app", [])
             scope: {
                 content: "@"
             },
-            template: `<div>hello {{ content }} </div>`,
+            template: `<div>hello {{ blurb(123) }} </div>`,
             compile: function (template) {
                 // console.log(template[0]);
                 let dom = template[0];
@@ -155,7 +174,6 @@ angular.module("app", [])
         }
     })
 
-
     .factory("blurbService", function () {
         let cache: {[key: string]: string} = {}; 
         return function(blurb: string) {
@@ -173,3 +191,24 @@ angular.module("app", [])
             return blurbService(input);
         }
     })
+
+    .service("unicornLauncher", UnicornLauncher)
+
+    function UnicornLauncher() {
+        this.count = 0;
+        this.launch = function() {
+            console.log("launched");
+            this.count++;
+        }
+    }
+
+    class TaskRunner {
+        name: string;
+        constructor(name: string) {
+            this.name = name;
+        }
+        run() {
+            console.log(`${this.name} is running`);
+        }
+
+    }
