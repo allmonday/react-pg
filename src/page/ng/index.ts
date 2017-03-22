@@ -1,4 +1,5 @@
 import * as angular from "angular";
+import { sortedUniq } from "lodash";
 
 
 angular.module("app", [])
@@ -147,27 +148,74 @@ angular.module("app", [])
         }
     })
 
-    .directive("myTemplate", function ($compile: angular.ICompileService) {
+    .factory("blurbHelper", function ($http: angular.IHttpService) {
+        return function (scope: angular.IScope, elementString: string) {
+            let matches = elementString.match(/\$\$blurb\[(\d+)\]/g);
+            if (matches) {
+                let blurbs = matches.map((item) => { return item.replace(/\$\$blurb\[/, "").replace("]", ""); })
+                let uniqBlurbs = sortedUniq(blurbs);
+
+                $http.get('/src/page/ng/resource/translate.json', {
+                        params: {
+                            b: blurbs
+                        },
+                        cache: true
+                    })
+                    .then((response)=> { 
+                        scope.$$blurb = response.data;  
+                    });
+
+            }
+        }   
+    })
+
+    .directive("myTemplate", function ($compile: angular.ICompileService, $http: angular.IHttpService, blurbHelper) {
+        let templateString = `<div>
+                <div ng-repeat="i in [1,2,3]">
+                    <div>hello {{ $$blurb[111] }} </div>
+                    <div>hello {{ $$blurb[112] }} </div> 
+                    <div>hello {{ $$blurb[113] }} </div> 
+                </div>
+            </div> `;
         return {
             restrict: 'E',
             scope: {
-                content: "@"
             },
-            template: `<div>hello {{ blurb(123) }} </div>`,
+            template: templateString,
             compile: function (template) {
-                // console.log(template[0]);
-                let dom = template[0];
-                console.log(dom.innerHTML);
-                
                 return {
                     pre: function preLink(scope, element, attrs) {
-                        console.log('prelink');
-                        element.append("<p>hel</p>");
-                        console.log(element[0].innerHTML);
+                        blurbHelper(scope, templateString);
                     },
                     post: function postLink(scope, element, attrs) {
-                        console.log('postlink');
-                        console.log(element[0].innerHTML);
+                        console.log(element[0]);
+                        // put your regular request here
+                    }
+                }
+            }
+        }
+    })
+    .directive("mySecondTemplate", function ($compile: angular.ICompileService, $http: angular.IHttpService, blurbHelper) {
+        let templateString = `<div>
+                <div ng-repeat="i in [1,2,3]">
+                    <div>hello {{ $$blurb[111] }} </div>
+                    <div>hello {{ $$blurb[112] }} </div> 
+                    <div>hello {{ $$blurb[114] }} </div> 
+                </div>
+            </div> `;
+        return {
+            restrict: 'E',
+            scope: {
+            },
+            template: templateString,
+            compile: function (template) {
+                return {
+                    pre: function preLink(scope, element, attrs) {
+                        blurbHelper(scope, templateString);
+                    },
+                    post: function postLink(scope, element, attrs) {
+                        console.log(element[0]);
+                        // put your regular request here
                     }
                 }
             }
@@ -186,9 +234,9 @@ angular.module("app", [])
         }
     })
 
-    .filter("blurb", function (blurbService: (arg: string) => string) {
-        return function (input: string) {
-            return blurbService(input);
+    .filter("default", function (blurbService: (arg: string) => string) {
+        return function (input: string, defaultValue: string) {
+            return input ? input : defaultValue;
         }
     })
 

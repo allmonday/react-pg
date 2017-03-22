@@ -20,10 +20,13 @@
         <div class="drag" draggable-element>drag me {{ name }}</div>
         <hr>
         <div ng-controller="testController as outer">
-            {{ outer.model.name | blurb }}
+            {{ outer.model.name }}
         </div>
         <span my-ng-bind="name"></span>
-        <my-template content="hey"></my-template>
+        <div ng-repeat="i in [1,2,3]">
+            <my-template></my-template>
+            <my-second-template></my-second-template>
+        </div>
 
     </div>
     <script src="/bin/src_page_ng_index.js"></script>
